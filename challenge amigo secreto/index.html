@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amigo Secreto</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #revealSection { display: none; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Juego de Amigo Secreto</h1>
+    <div>
+        <input type="text" id="nameInput" placeholder="Ingresa un nombre">
+        <button onclick="addParticipant()">Agregar</button>
+    </div>
+    <h3>Participantes:</h3>
+    <ul id="participantsList"></ul>
+    <button onclick="assignSecretFriends()">Asignar Amigos Secretos</button>
+    <div id="revealSection">
+        <h3>Revelar Amigo Secreto:</h3>
+        <ul id="revealList"></ul>
+    </div>
+    
+    <script>
+        let participants = [];
+        let assignments = {};
+
+        function addParticipant() {
+            const nameInput = document.getElementById('nameInput');
+            const name = nameInput.value.trim();
+            if (name && !participants.includes(name)) {
+                participants.push(name);
+                updateParticipantsList();
+                nameInput.value = '';
+            }
+        }
+
+        function updateParticipantsList() {
+            const list = document.getElementById('participantsList');
+            list.innerHTML = '';
+            participants.forEach(name => {
+                const li = document.createElement('li');
+                li.textContent = name;
+                list.appendChild(li);
+            });
+        }
+
+        function assignSecretFriends() {
+            if (participants.length < 2) {
+                alert('Se necesitan al menos 2 participantes.');
+                return;
+            }
+            let shuffled = [...participants];
+            shuffled.sort(() => Math.random() - 0.5);
+            for (let i = 0; i < shuffled.length; i++) {
+                assignments[shuffled[i]] = shuffled[(i + 1) % shuffled.length];
+            }
+            showRevealButtons();
+        }
+
+        function showRevealButtons() {
+            document.getElementById('revealSection').style.display = 'block';
+            const revealList = document.getElementById('revealList');
+            revealList.innerHTML = '';
+            participants.forEach(name => {
+                const li = document.createElement('li');
+                const button = document.createElement('button');
+                button.textContent = `Revelar Amigo Secreto de ${name}`;
+                button.onclick = () => alert(`${name}, tu amigo secreto es: ${assignments[name]}`);
+                li.appendChild(button);
+                revealList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
